@@ -4,7 +4,8 @@ import Logo from './components/Logo/Logo';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai'
+import Clarifai from 'clarifai';
+import clarifaiApikey from './apikey';
 import './App.css'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 
@@ -22,7 +23,7 @@ const particleOptions = {
 }
 
 const app = new Clarifai.App({
-  apiKey: '4cefcee9fd4d4c60b153b4efea8e0219'
+  apiKey: clarifaiApikey
  });
  
 
