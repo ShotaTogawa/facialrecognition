@@ -57,12 +57,6 @@ class App extends Component {
     }})
   }
 
-  componentDidMount() {
-    fetch('https://localhost:3000')
-    .then(response => response.json())
-    .then(console.log)
-  }
-
 
   calcurateFaceLocation = (data) =>{
     // clarifaiFace Apiからデータを取得
