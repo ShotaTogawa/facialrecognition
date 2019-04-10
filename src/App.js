@@ -85,7 +85,7 @@ class App extends Component {
   //入力された値をimageUrl(state)に指定し、顔の輪郭を返す
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    fetch('https://shielded-mesa-89014.herokuapp.com/imageurl', {
+    fetch('https://pure-gorge-15510.herokuapp.com/imageurl', {
           method: 'post',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -95,7 +95,7 @@ class App extends Component {
     .then(response => response.json())
     .then(response => {
       if (response) {
-        fetch('https://shielded-mesa-89014.herokuapp.com/image', {
+        fetch('https://pure-gorge-15510.herokuapp.com/image', {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
