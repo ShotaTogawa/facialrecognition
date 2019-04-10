@@ -6,8 +6,6 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
-import clarifaiApikey from './apikey';
 import './App.css'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 
@@ -24,30 +22,29 @@ const particleOptions = {
   }
 }
 
-const app = new Clarifai.App({
-  apiKey: clarifaiApikey
- });
+
  
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'signout',
+  isSignedIn : false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    password: '',
+    entries: 0,
+    joined: ''
+  }
+}
 
 
 class App extends Component {
   constructor() {
     super()
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: {},
-      route: 'signout',
-      isSignedIn : false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        password: '',
-        entries: 0,
-        joined: ''
-      }
-    }
+    this.state = initialState
   }
 
   loadUser = (data) => {
@@ -61,7 +58,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:3000')
+    fetch('https://localhost:3000')
     .then(response => response.json())
     .then(console.log)
   }
@@ -94,13 +91,17 @@ class App extends Component {
   //入力された値をimageUrl(state)に指定し、顔の輪郭を返す
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL, 
-        this.state.input)
+    fetch('https://shielded-mesa-89014.herokuapp.com/imageurl', {
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+          input: this.state.input
+        })
+      })
+    .then(response => response.json())
     .then(response => {
       if (response) {
-        fetch('http://localhost:3000/image', {
+        fetch('https://shielded-mesa-89014.herokuapp.com/image', {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -111,6 +112,7 @@ class App extends Component {
       .then(count => {
         this.setState(Object.assign(this.state.user, {entries: count}))
       })
+      .catch(console.log)
     }
       this.displayFaceBox(this.calcurateFaceLocation(response))
     })
@@ -119,7 +121,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({isSignedIn: false})
+      this.setState(initialState)
     } else if (route === 'home'){
       this.setState({isSignedIn: true})
     } 
@@ -143,7 +145,8 @@ class App extends Component {
         <Logo />
         <Rank 
           name={this.state.user.name} 
-          entries={this.state.user.entries}/>
+          entries={this.state.user.entries}
+        />
         <ImageLinkForm 
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
